@@ -15,7 +15,7 @@
 
   @if $rec {
     * {
-      background: none;
+      background: $crust;
       border: none;
       padding: 0;
       margin: 0;

@@ -4,7 +4,7 @@ local Variable = astal.Variable
 local bind = astal.bind
 local GLib = astal.require("GLib")
 local Mpris = astal.require("AstalMpris")
-local Tray = astal.require("AstalTray")
+local Tray = require("lgi").require("AstalTray")
 local Network = astal.require("AstalNetwork")
 local Battery = astal.require("AstalBattery")
 local Wp = astal.require("AstalWp")
@@ -16,20 +16,18 @@ local Vitals = require("lua.widgets.Vitals")
 
 local map = require("lua.lib.common").map
 
-local github_window = nil
 local audio_window = nil
 local network_window = nil
 local battery_window = nil
 local display_control_window = nil
-local sysinfo_window = nil
 local media_window = nil
 
 local function SysTray()
 	local tray = Tray.get_default()
 	return Widget.Box({
-		class_name = "systray-",
+		class_name = "SysTray",
 		bind(tray, "items"):as(function(items)
-			return map(items or {}, function(item)
+			return map(items, function(item)
 				return Widget.MenuButton({
 					tooltip_markup = bind(item, "tooltip_markup"),
 					use_popover = false,
@@ -281,34 +279,7 @@ local function Time(format)
 		end,
 	})
 end
-
-local function GithubActivity()
-	local window_visible = Variable(false)
-
-	local function toggle_github_window()
-		if window_visible:get() and github_window then
-			github_window:hide()
-			window_visible:set(false)
-		else
-			if not github_window then
-				local GithubWindow = require("lua.windows.Github")
-				github_window = GithubWindow.new()
-			end
-			github_window:show_all()
-			window_visible:set(true)
-		end
-	end
-
-	return Widget.Button({
-		class_name = "github-button",
-		on_clicked = toggle_github_window,
-		child = Widget.Icon({
-			icon = os.getenv("PWD") .. "/icons/github-symbolic.svg",
-			tooltip_text = "GitHub Activity",
-		}),
-	})
-end
-
+--[[
 local function AudioControl(monitor)
 	local audio = Wp.get_default().audio
 	local speaker = audio and audio.default_speaker
@@ -356,7 +327,7 @@ local function AudioControl(monitor)
 		end,
 	})
 end
-
+]]
 local function DisplayControl(monitor)
 	local window_visible = Variable(false)
 
@@ -483,53 +454,6 @@ local function BatteryLevel(monitor)
 	})
 end
 
-local function SysInfo(monitor)
-	local window_visible = Variable(false)
-	local user_vars = require("user-variables")
-	local profile_pic_path = user_vars.profile and user_vars.profile.picture or nil
-
-	local function toggle_sysinfo_window()
-		if window_visible:get() and sysinfo_window then
-			sysinfo_window:hide()
-			window_visible:set(false)
-		else
-			if not sysinfo_window then
-				local SysInfoWindow = require("lua.windows.SysInfo")
-				sysinfo_window = SysInfoWindow.new(monitor)
-			end
-			if sysinfo_window then
-				sysinfo_window:show_all()
-			end
-			window_visible:set(true)
-		end
-	end
-
-	local child
-	if profile_pic_path and require("lua.lib.common").file_exists(profile_pic_path) then
-		child = Widget.Box({
-			class_name = "profile-image",
-			css = string.format("background-image: url('%s');", profile_pic_path),
-			tooltip_text = "System Information",
-		})
-	else
-		child = Widget.Icon({
-			icon = "computer-symbolic",
-			tooltip_text = "System Information",
-		})
-	end
-
-	return Widget.Button({
-		class_name = "sysinfo-button",
-		on_clicked = toggle_sysinfo_window,
-		child = child,
-		setup = function(self)
-			self:hook(self, "destroy", function()
-				window_visible:drop()
-			end)
-		end,
-	})
-end
-
 return function(gdkmonitor)
 	if not gdkmonitor then
 		Debug.error("Bar", "No monitor available")
@@ -544,9 +468,6 @@ return function(gdkmonitor)
 		anchor = Anchor.TOP + Anchor.LEFT + Anchor.RIGHT,
 		exclusivity = "EXCLUSIVE",
 		on_destroy = function()
-			if github_window then
-				github_window:destroy()
-			end
 			if audio_window then
 				audio_window:destroy()
 			end
@@ -558,9 +479,6 @@ return function(gdkmonitor)
 			end
 			if display_control_window then
 				display_control_window:destroy()
-			end
-			if sysinfo_window then
-				sysinfo_window:destroy()
 			end
 			if media_window then
 				media_window:destroy()
@@ -580,14 +498,12 @@ return function(gdkmonitor)
 			Widget.Box({
 				class_name = "right-box",
 				halign = "END",
-				GithubActivity(),
 				SysTray(),
-				AudioControl(gdkmonitor),
+				--AudioControl(gdkmonitor),
 				DisplayControl(gdkmonitor),
 				Wifi(gdkmonitor),
 				BatteryLevel(gdkmonitor),
-				Time("%A %d, %H:%M"),
-				SysInfo(gdkmonitor),
+				Time("%A %d, %H:%M:%S"),
 			}),
 		}),
 	})

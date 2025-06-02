@@ -8,29 +8,6 @@ local GLib = astal.require("GLib")
 local Debug = require("lua.lib.debug")
 local Process = astal.require("AstalIO").Process
 
-local CONSERVATION_MODE_PATH = "/sys/devices/pci0000:00/0000:00:14.3/PNP0C09:00/VPC2004:00/conservation_mode"
-
-local function getConservationMode()
-	local content, err = astal.read_file(CONSERVATION_MODE_PATH)
-	if err then
-		Debug.error("Battery", "Failed to read conservation mode: %s", err)
-		return false
-	end
-	return tonumber(content) == 1
-end
-
-local function setConservationMode(enabled)
-	local value = enabled and "1" or "0"
-	local success, stderr, status =
-		GLib.spawn_command_line_sync("sudo -n sh -c 'echo " .. value .. " > " .. CONSERVATION_MODE_PATH .. "'")
-
-	if not success or status ~= 0 then
-		Debug.error("Battery", "Failed to set conservation mode: %s", stderr or "Unknown error")
-		return false
-	end
-
-	return true
-end
 
 local function getBatteryDevice()
 	local upower = Battery.UPower.new()
@@ -271,89 +248,6 @@ local function PowerProfile(on_destroy_ref)
 	})
 end
 
-local function ConservationMode()
-	local conservation_var = Variable(getConservationMode())
-
-	local function updateButtonState(button)
-		local is_active = getConservationMode()
-		conservation_var:set(is_active)
-
-		if is_active then
-			button:get_style_context():add_class("active")
-		else
-			button:get_style_context():remove_class("active")
-		end
-	end
-
-	local button = Widget.Button({
-		class_name = "conservation-mode-button",
-		hexpand = true,
-		on_clicked = function(self)
-			local new_state = not conservation_var:get()
-
-			if setConservationMode(new_state) then
-				conservation_var:set(new_state)
-				if new_state then
-					self:get_style_context():add_class("active")
-				else
-					self:get_style_context():remove_class("active")
-				end
-			else
-				Debug.error("Battery", "Failed to change conservation mode. Make sure your user has sudo privileges.")
-			end
-		end,
-		child = Widget.Box({
-			orientation = "HORIZONTAL",
-			spacing = 10,
-			hexpand = true,
-			Widget.Icon({
-				icon = "battery-good-symbolic",
-			}),
-			Widget.Box({
-				orientation = "VERTICAL",
-				spacing = 2,
-				hexpand = true,
-				Widget.Label({
-					label = "Battery Conservation Mode",
-					xalign = 0,
-				}),
-				Widget.Label({
-					label = "Limit battery charge to 80% to extend battery lifespan",
-					xalign = 0,
-					css = "font-size: 12px; opacity: 0.7;",
-				}),
-			}),
-			Widget.Icon({
-				icon = Variable.derive({ conservation_var }, function(enabled)
-					return enabled and "emblem-ok-symbolic" or "emblem-important-symbolic"
-				end)(),
-			}),
-		}),
-		setup = function(self)
-			updateButtonState(self)
-		end,
-	})
-
-	astal.monitor_file(CONSERVATION_MODE_PATH, function(_, event)
-		if event == "CHANGED" then
-			updateButtonState(button)
-		end
-	end)
-
-	return Widget.Box({
-		class_name = "conservation-mode-section",
-		orientation = "VERTICAL",
-		spacing = 10,
-		hexpand = true,
-		Widget.Label({
-			label = "Battery Settings",
-			xalign = 0,
-			css = "font-weight: 600; font-size: 16px;",
-		}),
-		button,
-	})
-end
-
 local function Settings(close_window)
 	return Widget.Box({
 		class_name = "settings-section",
@@ -461,8 +355,6 @@ function BatteryWindow.new(gdkmonitor)
 		return state
 	end)
 
-	cleanup_refs.conservation_var = Variable(getConservationMode())
-
 	window = Widget.Window({
 		class_name = "BatteryWindow",
 		gdkmonitor = gdkmonitor,
@@ -534,7 +426,6 @@ function BatteryWindow.new(gdkmonitor)
 				BatteryInfo(cleanup_refs),
 			}),
 			PowerProfile(cleanup_refs),
-			ConservationMode(),
 			Settings(close_window),
 		}),
 	})

@@ -68,7 +68,7 @@ local function create_volume_control(type, cleanup_refs, is_destroyed)
 			step_increment = 5,
 			page_increment = 5,
 		}),
-		on_value_changed = function(self)
+		--[[on_value_changed = function(self)
 			if not device or is_destroyed then
 				return
 			end
@@ -77,7 +77,7 @@ local function create_volume_control(type, cleanup_refs, is_destroyed)
 				device.volume = new_value
 				device_volume:set(self:get_value())
 			end
-		end,
+		end,]]
 	})
 
 	local volume_box = Widget.Box({
@@ -152,11 +152,11 @@ local function create_volume_control(type, cleanup_refs, is_destroyed)
 		}),
 	})
 
-	if device.volume then
+	--[[if device.volume then
 		volume_scale:set_value(current_volume)
 	end
 
-	return volume_box
+	return volume_box]]
 end
 
 local function create_device_list(devices, icon_name)
@@ -364,18 +364,6 @@ function AudioControlWindow.new(gdkmonitor)
 							end),
 						}),
 					}),
-				}),
-			}),
-			Widget.Box({
-				class_name = "settings",
-				hexpand = true,
-				Widget.Button({
-					label = "Sound Settings",
-					hexpand = true,
-					on_clicked = function()
-						close_window()
-						Process.exec_async("env XDG_CURRENT_DESKTOP=GNOME gnome-control-center sound")
-					end,
 				}),
 			}),
 		}),

@@ -44,7 +44,7 @@ local function BrightnessControl()
 			spacing = 14,
 			hexpand = true,
 			Widget.Icon({
-				icon = "display-brightness-low-symbolic",
+				icon = "brightness-low-symbolic",
 				class_name = "slider-icon",
 			}),
 			Widget.Slider({
@@ -60,7 +60,7 @@ local function BrightnessControl()
 				end,
 			}),
 			Widget.Icon({
-				icon = "display-brightness-high-symbolic",
+				icon = "brightness-high-symbolic",
 				class_name = "slider-icon",
 			}),
 		}),

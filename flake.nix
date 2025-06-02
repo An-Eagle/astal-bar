@@ -19,7 +19,6 @@
       inherit pkgs;
       name = "kaneru";
       src = ./.;
-
       extraPackages = with astal.packages.${system};
         [
           battery
@@ -42,8 +41,8 @@
           wget
           curl
           fastfetch
-        ])
-        ++ (with pkgs.lua52Packages; [
+        ]);
+        extraLuaPackages = (ps: with ps; [
           cjson
           luautf8
         ]);

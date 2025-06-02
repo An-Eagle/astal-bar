@@ -179,6 +179,7 @@ local function PlaybackControls(player)
 				perform_action(function()
 					if player["playback-status"] == "PLAYING" then
 						player:pause()
+						print("2")
 					else
 						player:play()
 					end

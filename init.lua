@@ -2,16 +2,12 @@ local astal = require("astal")
 local App = require("astal.gtk3.app")
 local Debug = require("lua.lib.debug")
 
-Debug.info("App", "Starting astal-bar")
 Debug.info("App", "Modules loaded successfully")
-
 local Desktop = require("lua.windows.Desktop")
 local Bar = require("lua.windows.Bar")
-local Dock = require("lua.windows.Dock")
 local NotificationPopups = require("lua.windows.NotificationPopups")
 local OSD = require("lua.windows.OSD")
 local src = require("lua.lib.common").src
-
 Debug.info("App", "Components loaded successfully")
 
 Debug.set_config({
@@ -70,7 +66,6 @@ App:start({
 			local windows = {
 				-- desktop = Desktop(monitor),
 				bar = Bar(monitor),
-				dock = Dock(monitor),
 				notifications = NotificationPopups(monitor),
 				osd = OSD(monitor),
 			}
