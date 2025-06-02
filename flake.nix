@@ -41,6 +41,7 @@
           wget
           curl
           fastfetch
+          adwaita-fonts
         ]);
         extraLuaPackages = (ps: with ps; [
           cjson

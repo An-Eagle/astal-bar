@@ -488,11 +488,12 @@ return function(gdkmonitor)
 			Widget.Box({
 				halign = "START",
 				class_name = "left-box",
+				Workspaces(),
 				ActiveClient(),
 			}),
 			Widget.Box({
 				class_name = "center-box",
-				Workspaces(),
+				Time("%A %d, %H:%M:%S"),
 				Media(gdkmonitor),
 			}),
 			Widget.Box({
@@ -503,7 +504,6 @@ return function(gdkmonitor)
 				DisplayControl(gdkmonitor),
 				Wifi(gdkmonitor),
 				BatteryLevel(gdkmonitor),
-				Time("%A %d, %H:%M:%S"),
 			}),
 		}),
 	})

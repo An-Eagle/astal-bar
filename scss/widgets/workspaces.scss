@@ -2,17 +2,17 @@
 
 .Workspaces {
   .monitor-workspaces {
-    background-color: gtkalpha($surface1, 0.6);
+    background-color: gtkalpha($surface0, 0.9);
     border-radius: to-rem(50px);
     padding: to-rem(8px) to-rem(8px);
-    margin: 0 to-rem(4px) 0 0;
+    margin: 0 to-rem(4px) 0 to-rem(4px);
 
     &.monitor-1 .workspace-button {
-      background-color: gtkalpha($blue, 0.2);
+      background-color: gtkalpha($sky, 0.4);
 
       &.active {
-        background-color: $blue;
-        box-shadow: 0 0 to-rem(4px) gtkalpha($blue, 0.4);
+        background-color: $sky;
+        box-shadow: 0 0 to-rem(4px) gtkalpha($sky, 0.4);
       }
     }
 
@@ -66,7 +66,7 @@
       min-height: to-rem(10px);
       padding: 0;
       margin: 0 to-rem(2px);
-      border-radius: to-rem(50px);
+      border-radius: to-rem(32px);
       transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {

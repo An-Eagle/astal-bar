@@ -4,31 +4,34 @@
 @use "../components/button" as *;
 
 .Bar {
-  @include unset($rec: true);
 
   > centerbox {
-    background-color: $surface0;
-    padding: to-rem(0px) 0;
+    background-color: transparent;
+    background-image: url("../images/backgroundblurredcropped.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: to-rem(2px) 0;
   }
 
   .left-box {
-    background-color: $surface0;
-    border-radius: to-rem(10px);
-    padding: to-rem(4px) to-rem(4px);
+    background-color: transparent;
+    border-radius: to-rem(8px);
+    padding: to-rem(8px) to-rem(8px);
     /* margin: to-rem(20px) 0 0 to-rem(20px); */
   }
 
   .center-box {
-    background-color: $surface0;
-    border-radius: to-rem(10px);
-    padding: to-rem(4px) to-rem(4px);
+    background-color: transparent;
+    border-radius: to-rem(8px);
+    padding: to-rem(8px) to-rem(8px);
     /* margin: to-rem(20px) 0 0 to-rem(20px); */
   }
 
   .right-box {
-    background-color: $surface0;
-    border-radius: to-rem(10px);
-    padding: to-rem(4px) to-rem(4px);
+    background-color: transparent;
+    border-radius: to-rem(8px);
+    padding: to-rem(8px) to-rem(8px);
     /* margin: to-rem(20px) to-rem(20px) 0 0; */
   }
 
@@ -69,11 +72,8 @@
     }
   }
 
-  .github-button {
-    @include button;
-  }
 
-  .systray- {
+  .SysTray {
     button {
       @include button;
     }
@@ -97,26 +97,5 @@
 
   .clock-button {
     @include button;
-  }
-
-  .sysinfo-button {
-    border-radius: 100%;
-    padding: to-rem(6px);
-    background-color: gtkalpha($surface1, 0.6);
-    transition: all 200ms ease;
-    border: none;
-    margin: 0 to-rem(4px);
-
-    &:hover {
-      background-color: gtkalpha($surface2, 0.8);
-    }
-
-    .profile-image {
-      border-radius: 100%;
-      background-size: cover;
-      background-position: center;
-      min-width: 24px;
-      min-height: 24px;
-    }
   }
 }

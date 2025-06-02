@@ -18,7 +18,7 @@ Debug.set_config({
 })
 
 local scss = src("scss/style.scss")
-local css = "/tmp/style.css"
+local css = "scss/style.css"
 
 astal.exec("sass " .. scss .. " " .. css)
 

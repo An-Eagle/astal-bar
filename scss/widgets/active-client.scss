@@ -2,6 +2,7 @@
 
 @mixin ActiveClient {
   .ActiveClient {
+    padding-left: 4px;
     .app-id {
       font-size: to-rem(13px);
       color: $overlay2;
